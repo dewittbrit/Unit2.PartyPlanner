@@ -27,19 +27,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to fetch parties from the API
     async function fetchParties() {
       try {
-        const response = await fetch(testUrl);
+        const response = await fetch('https://fsa-crud-2aa9294fe819.herokuapp.com/api/2304-FTB-ET-WEB-PT/events');
         const parties = await response.json();
   
         // Call the function to render parties on the page
-        renderParties(parties);
+        renderParties(response);
       } catch (error) {
         console.error('Error fetching parties:', error);
       }
+    
     }
   
     // Function to render parties on the page
     function renderParties(parties) {
-      partyList.innerHTML = '';
+      partyList.innerHTML = 'https://fsa-crud-2aa9294fe819.herokuapp.com/api/2304-FTB-ET-WEB-PT/events';
   
       parties.forEach((party) => {
         const listItem = document.createElement('li');
