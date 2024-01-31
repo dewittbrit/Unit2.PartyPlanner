@@ -83,16 +83,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   
     // Function to delete a party from the API
-    async function deleteParty(id) {
-      try {
-        await fetch(testUrl+"/"+id, {
-          method: 'DELETE',
-        });
-  
-        console.log(`Party with ID ${partyId} deleted`);
-      } catch (error) {
-        console.error('Error deleting party:', error);
+    async function deleteParty(partyId) {
+        try {
+          await fetch(`https://fsa-crud-2aa9294fe819.herokuapp.com/api/2109-CPU-RM-WEB-PT/events/${partyId}`, {
+            method: 'DELETE',
+          });
+    
+          console.log(`Party with ID ${partyId} deleted`);
+        } catch (error) {
+          console.error('Error deleting party:', error);
+        }
       }
-    }
-  });
-
+    });
