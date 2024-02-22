@@ -1,98 +1,94 @@
-let testUrl = 'https://fsa-crud-2aa9294fe819.herokuapp.com/api/2304-FTB-ET-WEB-PT/events'
+const COHORT = "2109-CPU-RM-WEB-PT";
+    const API_URL = `https://fsa-crud-2aa9294fe819.herokuapp.com/api/2109-CPU-RM-WEB-PT/events`;
 
-document.addEventListener('DOMContentLoaded', () => {
-    const partyForm = document.getElementById('partyForm');
-    const partyList = document.getElementById('partyList');
-  
-    // Fetch parties from the API and render them on page load
-    fetchParties();
-  
-    // Event listener for form submission
-    partyForm.addEventListener('submit', async (event) => {
-      event.preventDefault();
-  
-      const formData = new FormData(partyForm);
-      const partyData = Object.fromEntries(formData.entries());
-  
-      // Call the function to add a new party
-      await addParty(partyData);
-  
-      // Clear the form fields
-      partyForm.reset();
-  
-      // Fetch and render updated parties after adding a new one
-      fetchParties();
-    });
-  
-    // Function to fetch parties from the API
-    async function fetchParties() {
-      try {
-        const response = await fetch('https://fsa-crud-2aa9294fe819.herokuapp.com/api/2304-FTB-ET-WEB-PT/events');
-        const parties = await response.json();
-  
-        // Call the function to render parties on the page
-        renderParties(response);
-      } catch (error) {
-        console.error('Error fetching parties:', error);
-      }
-    
+    const state = {
+      parties: [],
+    };
+
+    const partyList = document.querySelector("#partyList");
+    const addPartyForm = document.querySelector("#addParty");
+    addPartyForm.addEventListener("submit", addParty);
+
+
+    async function render() {
+        await getParties();
+        renderParties();
     }
-  
-    // Function to render parties on the page
-    function renderParties(parties) {
-      partyList.innerHTML = 'https://fsa-crud-2aa9294fe819.herokuapp.com/api/2304-FTB-ET-WEB-PT/events';
-  
-      parties.forEach((party) => {
-        const listItem = document.createElement('li');
-        listItem.innerHTML = `
-          <strong>${party.name}</strong> - ${party.date}, ${party.time}<br>
-          Location: ${party.location}<br>
-          Description: ${party.description}
-          <button data-id="${party.id}" class="deleteButton">Delete</button>
-        `;
-  
-        // Event listener for delete button
-        const deleteButton = listItem.querySelector('.deleteButton');
-        deleteButton.addEventListener('click', () => {
-          // Call the function to delete the party
-          deleteParty(party.id);
-  
-          // Fetch and render updated parties after deleting one
-          fetchParties();
-        });
-  
-        partyList.appendChild(listItem);
-      });
-    }
-  
-    // Function to add a new party to the API
-    async function addParty(partyData) {
-      try {
-        const response = await fetch('https://fsa-crud-2aa9294fe819.herokuapp.com/api/2109-CPU-RM-WEB-PT/events', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(partyData),
-        });
-  
-        const newParty = await response.json();
-        console.log('New party added:', newParty);
-      } catch (error) {
-        console.error('Error adding party:', error);
-      }
-    }
-  
-    // Function to delete a party from the API
-    async function deleteParty(partyId) {
+
+    async function getParties() {
         try {
-          await fetch(`https://fsa-crud-2aa9294fe819.herokuapp.com/api/2109-CPU-RM-WEB-PT/events/${partyId}`, {
-            method: 'DELETE',
-          });
-    
-          console.log(`Party with ID ${partyId} deleted`);
+            const response = await fetch(`https://fsa-crud-2aa9294fe819.herokuapp.com/api/2109-CPU-RM-WEB-PT/events`);
+            const json = await response.json();
+            state.parties = json.data;
         } catch (error) {
-          console.error('Error deleting party:', error);
+            console.error(error);
         }
-      }
-    });
+    }
+
+    function renderParties() {
+        if (!state.parties.length) {
+            partyList.innerHTML = "<li>No scheduled parties.</li>";
+            return;
+        }
+
+        const partyElements = state.parties.map((party) => {
+            const li = document.createElement("li");
+            li.innerHTML = `
+                <h2>${party.name}</h2>
+                <p>Date: ${party.date}</p>
+                <p>Time: ${party.time}</p>
+                <p>Location: ${party.location}</p>
+                <p>Description: ${party.description}</p>
+                <button onclick="deleteParty(${party.id})">Delete</button>
+            `;
+            return li;
+        });
+
+        partyList.replaceChildren(...partyElements);
+    }
+
+    async function addParty(event) {
+        event.preventDefault();
+        
+
+        try {
+            const response = await fetch(`https://fsa-crud-2aa9294fe819.herokuapp.com/api/2109-CPU-RM-WEB-PT/events`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: addPartyForm.name.value,
+                    date: addPartyForm.date.value,
+                    time: addPartyForm.time.value,
+                    location: addPartyForm.location.value,
+                    description: addPartyForm.description.value,
+                    
+                }),
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to schedule party");
+        }
+
+        render();
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function deleteParty(id) {
+        try {
+            const response = await fetch(`${API_URL}/${id}`, {
+                method: "DELETE"
+            });
+
+        if (!response.ok) {
+            throw new Error(`Failed to delete party with ID: ${id}`);
+        }
+
+            render();
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    render();

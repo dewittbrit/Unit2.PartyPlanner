@@ -1,38 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Party Planner</title>
-  <link rel="stylesheet" href="index.css">
-  <script defer src="index.js"></script> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Party Planning</title>
+    <link rel="stylesheet" href="index.css" />
+    <script defer src="index.js"></script>
 </head>
 <body>
-  <div id="app">
-    <h1>Party Planner</h1>
+    <ul id="partyList"></ul>
 
-    <!-- Form to add a new party -->
-    <form id="partyForm">
-      <label for="eventName">Event Name:</label>
-      <input type="text" id="eventName" required>
-      <br>
-
-      <label for="eventDate">Event Date:</label>
-      <input type="date" id="eventDate" required>
-<br>
-
-      <label for="eventLocation">Event Location:</label>
-      <input type="text" id="eventLocation" required>
-<br>
-<br>
-      <label for="eventDescription">Event Description:</label>
-      <textarea id="eventDescription" required></textarea>
-<br><br>
-      <button type="submit">Add Party</button>
+    <form id="addParty">
+        <input type="text" name="name" placeholder="Party Name" required />
+        <input type="date" name="date" required />
+        <input type="time" name="time" required />
+        <input type="text" name="location" placeholder="Location" required />
+        <textarea name="description" placeholder="Description" required></textarea>
+        <button type="submit">Schedule Party</button>
     </form>
-
-
-  </div>
+    
 </body>
 </html>
-
